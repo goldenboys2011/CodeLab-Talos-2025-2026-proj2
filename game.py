@@ -5,6 +5,7 @@ import numpy as np
 
 WIDTH = 24
 HEIGHT = 24
+TILE_SIZE = 24
 gameOver = False
 
 ## [=][=][=][=] AI [=][=][=][=]
@@ -112,26 +113,41 @@ snake = Snake()
 apple = Apple()
 
 ## AI SHIT
-goal_state = apple.x * WIDTH + apple.y
+apple_grid_x = apple.x // TILE_SIZE
+apple_grid_y = apple.y // TILE_SIZE
+goal_state = apple_grid_y * WIDTH + apple_grid_x
 
 def get_next_state(state, action):
-    row, col = divmod(state, 4)  
-
-    if action == 0 and col > 0:        
+    row, col = divmod(state, WIDTH)
+    
+    if action == 0:     
+        row -= 1
         snake.up()
-    elif action == 1 and col < 3:      
+    elif action == 1:  
+        row += 1
         snake.down()
-    elif action == 2 and row > 0:     
+    elif action == 2:  
+        col -= 1
         snake.left()
-    elif action == 3 and row < 3:     
+    elif action == 3:   
+        col += 1
         snake.right()
 
-    return row * 4 + col
+    row = max(0, min(HEIGHT - 1, row))
+    col = max(0, min(WIDTH - 1, col))
 
-current_state = np.random.randint(0, n_states) 
+    
+    return row * WIDTH + col
+
+
+head = snake.parts[-1]
+snake_grid_x = head.x // TILE_SIZE
+snake_grid_y = head.y // TILE_SIZE
+current_state = snake_grid_y * WIDTH + snake_grid_x
 gameOver = False
 
 while not gameOver:
+    print("state:", current_state, "action:", action, "next:", next_state)
     for event in pygame.event.get():
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             pygame.quit()
@@ -154,7 +170,10 @@ while not gameOver:
     snake.update()
     if(is_collision(snake.parts[-1], apple)):
         apple.apple_eaten()
-        goal_state = apple.x * WIDTH + apple.y
+        apple_grid_x = apple.x // TILE_SIZE
+        apple_grid_y = apple.y // TILE_SIZE
+        goal_state = apple_grid_y * WIDTH + apple_grid_x
+
 
     for part in snake.parts[:-1]:
         if is_collision(snake.parts[-1], part):
