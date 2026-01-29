@@ -194,8 +194,6 @@ while not gameOver:
 
     next_state = get_next_state(current_state, action)
 
-    reward = 1 if next_state == goal_state else 0
-
     Q_table[current_state, action] += learning_rate * (
         reward + discount_factor * np.max(Q_table[next_state]) - Q_table[current_state, action]
     )
