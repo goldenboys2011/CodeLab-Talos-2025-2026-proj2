@@ -147,7 +147,6 @@ current_state = snake_grid_y * WIDTH + snake_grid_x
 gameOver = False
 
 while not gameOver:
-    print("state:", current_state, "action:", action, "next:", next_state)
     for event in pygame.event.get():
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             pygame.quit()
@@ -202,3 +201,6 @@ while not gameOver:
         break
     
     current_state = next_state
+
+    print("state:", current_state, "action:", action, "next:", next_state)
+
